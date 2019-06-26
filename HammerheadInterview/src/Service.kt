@@ -1,8 +1,8 @@
 import kotlin.random.Random
 
-open class Service(private val service : String, private val routes : List<String>)
+open class Service(val service : String, private val routes : List<String>)
 {
-    val userList: List<User>
+    var userList: List<User>
 
     init //generates a random list of users
     {
@@ -34,31 +34,23 @@ open class Service(private val service : String, private val routes : List<Strin
 
     private fun genUser() : User //generates a random user and adds three route lists to each user
     {
-        val uid = Random.nextInt(1,100)
-        val newUser = userList?.find{it.userID == uid} ?: User(uid)
+        val userID = Random.nextInt(1,100)
+        val newUser = userList?.find{it.userID == userID} ?: User(userID)
 
         for(i in 1..3)
         {
-            newUser.addRoute(genRoute(uid))
+            newUser.addRoute(genRoute())
         }
 
         return newUser
     }
 
-    private fun genRoute(id:Int) : Route //generates random routes for each user
+    private fun genRoute() : Route //generates random routes for each user
     {
         val routeList = mutableListOf<String>()
-        var dest = ""
         for(i in 1..4)
         {
-            when(service)
-            {
-                "Strava" -> dest = id.toString() + routes.random()
-                "RWGPS" -> dest = routes.random() + id.toString()
-                "Komoot" -> dest = id.toString() + routes.random() + id.toString()
-            }
-
-            routeList.add(dest)
+            routeList.add(routes.random())
         }
 
         return Route(routeList)

@@ -4,12 +4,16 @@ import kotlin.system.measureTimeMillis
 fun main()
 {
         println(measureTimeMillis {
-            val services = Services()
-            println("Komoot's user list: " + services.komoot.userList.toString())
+            val komoot = Komoot()
+            val strava = Strava()
+            val rwgps = Rwgps()
+
+            val services = Services(listOf(komoot, strava, rwgps))
+            println("Komoot's user list: " + komoot.userList.toString())
             println()
-            println("Strava's user list " + services.strava.userList.toString())
+            println("Strava's user list " + strava.userList.toString())
             println()
-            println("RWGPS's user list " + services.rwgps.userList.toString())
+            println("RWGPS's user list " + rwgps.userList.toString())
             println()
 
             println("All routes: " + services.getAllRoutes().toString())
@@ -27,5 +31,7 @@ fun main()
                 println("For user $rng services $list: " + services.getRoutesbyService(rng, list))
                 println()
             }
+
+
         }.toString() + " milliseconds to complete.")
 }

@@ -1,14 +1,10 @@
 import java.lang.IllegalArgumentException
 
-class Services : IServices
+class Services(private val servicesList: List<Service>) : IServices
 {
-    val strava = Strava()
-    val rwgps = Rwgps()
-    val komoot = Komoot()
-
     override fun getAllRoutes() : List<String>
     {
-        return listOf(strava.getAllRoutes(), rwgps.getAllRoutes(), komoot.getAllRoutes()).flatten()
+        return listOf(servicesList.map { it.getAllRoutes() }).flatten().flatten()
     }
 
     override fun getUniqueRoutes() : List<String>
@@ -18,21 +14,23 @@ class Services : IServices
 
     override fun getAllUserRoutes(userID: Int) : List<String>
     {
-        return listOf(strava.getAllUserRoutes(userID), rwgps.getAllUserRoutes(userID), komoot.getAllUserRoutes(userID)).flatten()
+        return listOf(servicesList.map { it.getAllUserRoutes(userID)}).flatten().flatten()
     }
 
-    override fun getRoutesbyService(userID: Int, serviceList: List<String>) : List<String>
+    override fun getRoutesbyService(userID: Int, sList: List<String>) : List<String>
     {
         val list = mutableListOf<String>()
 
-        serviceList.map { when(it)
+        for(serviceStr in sList)
         {
-            "Strava" -> list.addAll(strava.getAllUserRoutes(userID))
-            "RWGPS" -> list.addAll(rwgps.getAllUserRoutes(userID))
-            "Komoot" -> list.addAll(komoot.getAllUserRoutes(userID))
-            else -> errorResponse("No such service.")
-        } }
-
+            for(service in servicesList)
+            {
+                if(service.service == serviceStr)
+                {
+                    list.addAll(service.getAllUserRoutes(userID))
+                }
+            }
+        }
         return list
     }
 

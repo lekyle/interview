@@ -1,1 +1,1 @@
-data class Route(val routeList: MutableList<String>)
+data class Route(var routeList: MutableList<String>)
